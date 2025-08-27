@@ -13,6 +13,8 @@ const Users = () => {
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
+    const [edit, setEdit] = useState(false);
+    const [operation, setOperation] = useState(true);
 
 
     // tự động reload lại table sau khi thêm mới
@@ -23,29 +25,62 @@ const Users = () => {
     const showModal = () => {
         setIsModalOpen(true);
     };
+
+    const handleEdit = (record) => {
+        setOperation(false);
+        setIsModalOpen(true);
+        const { _id, fullName, email, phone } = record;
+        console.log(_id);
+        setFullName(fullName);
+        setPhone(phone);
+        setEdit(true);
+        setCurrentUser(record);
+    };
+
     const handleOk = async () => {
-        setIsModalOpen(false);
-        const res = await fetch('http://localhost:8080/api/v1/user', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(
-                {
-                    fullName,
-                    email,
-                    phone,
-                    password
-                }
-            )
-        })
-        const result2 = await res.json();
-        messageApi.success("Thêm mới thành công");
-        setFullName("");
-        setEmail("");
-        setPhone("");
-        setPassword("");
-        await getData();
+        if (operation) {
+            setIsModalOpen(false);
+            const res = await fetch('http://localhost:8080/api/v1/user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(
+                    {
+                        fullName,
+                        email,
+                        phone,
+                        password
+                    }
+                )
+            })
+            const result2 = await res.json();
+            messageApi.success("Thêm mới thành công");
+            setFullName("");
+            setEmail("");
+            setPhone("");
+            setPassword("");
+            await getData();
+        } else {
+            setIsModalOpen(false);
+            const res = await fetch(`http://localhost:8080/api/v1/user`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(
+                    {
+                        _id: currentUser._id,
+                        fullName,
+                        phone
+                    }
+                )
+            })
+            messageApi.success("Cập nhật thành công");
+            await getData();
+            setOperation(true);
+        }
+        
 
     };
     function delay(ms) {
@@ -53,7 +88,6 @@ const Users = () => {
     }
     const getData = async () => {
         setIsLoading(true);
-        await delay(1000);
         const res = await fetch('http://localhost:8080/api/v1/user');
         const result2 = await res.json();
         setResult(result2.data);
@@ -61,6 +95,9 @@ const Users = () => {
     }
     const handleCancel = () => {
         setIsModalOpen(false);
+        setEdit(false);
+        setFullName("");
+        setPhone("");
     };
 
     // Xem chi tiết
@@ -102,7 +139,7 @@ const Users = () => {
             title: 'Action',
             render: (_, record) => (
                 <Space size="middle">   
-                    <div className='cursor-pointer text-orange-500'><EditOutlined /></div>
+                    <div className='cursor-pointer text-orange-500' onClick={() =>  handleEdit(record)}><EditOutlined /></div>
                     <Popconfirm
                         title="Xóa User"
                         description="Bạn có chắc chắn muốn xóa User này?"
@@ -128,7 +165,7 @@ const Users = () => {
             <div className="p-4">
                 <div className='flex justify-between items-center mb-4'>
                     <h1 className="text-2xl font-bold">Users Table</h1>
-                    <Button type="primary" onClick={showModal}>+ Add User</Button>
+                    <Button type="primary" onClick={() => { showModal(), setOperation(true)}}>+ Add User</Button>
                 </div>
 
                 {
@@ -164,9 +201,9 @@ const Users = () => {
                     <div>Tên người dùng</div>
                     <Input placeholder="Tên người dùng" name='fullName' value={fullName} onChange={(e) => setFullName(e.target.value)} />
                     <div>Email</div>
-                    <Input placeholder="Email" name='email' value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <Input placeholder="Email" disabled={edit} name='email' value={email} onChange={(e) => setEmail(e.target.value)} />
                     <div>password</div>
-                    <Input type='password' placeholder="password" name='password' value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <Input type='password' disabled={edit} placeholder="password" name='password' value={password} onChange={(e) => setPassword(e.target.value)} />
                     <div>phone</div>
                     <Input placeholder="phone" name='phone' value={phone} onChange={(e) => setPhone(e.target.value)} />
                 </Modal>
