@@ -1,4 +1,4 @@
-import { Button, Drawer, Space, Table, Modal, Input, message, Spin } from 'antd';
+import { Button, Drawer, Space, Table, Modal, Input, message, Spin, Popconfirm } from 'antd';
 import { useEffect, useState } from 'react';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -53,10 +53,9 @@ const Users = () => {
     }
     const getData = async () => {
         setIsLoading(true);
-        await delay(2000);
+        await delay(1000);
         const res = await fetch('http://localhost:8080/api/v1/user');
         const result2 = await res.json();
-        console.log(result2.data);
         setResult(result2.data);
         setIsLoading(false);
     }
@@ -68,7 +67,13 @@ const Users = () => {
     // Thêm mới User
     // Update User
     // Deleted
-
+    const handleDelete = async (id) => {
+        const res = await fetch(`http://localhost:8080/api/v1/user/${id}`, {
+            method: 'DELETE'
+        });
+        messageApi.success("Xóa thành công");
+        await getData();
+    }
     useEffect(() => {
         getData();
     }, []);
@@ -98,7 +103,16 @@ const Users = () => {
             render: (_, record) => (
                 <Space size="middle">   
                     <div className='cursor-pointer text-orange-500'><EditOutlined /></div>
-                    <div className='cursor-pointer text-red-500'><DeleteOutlined /></div>
+                    <Popconfirm
+                        title="Xóa User"
+                        description="Bạn có chắc chắn muốn xóa User này?"
+                        onConfirm={() => handleDelete(record._id)}
+                        onCancel={() => messageApi.info('Hủy Xóa')}
+                        okText="Yes"
+                        cancelText="No"
+                    >
+                        <div className='cursor-pointer text-red-500'><DeleteOutlined /></div>
+                    </Popconfirm>
                 </Space>
             ),
         },
