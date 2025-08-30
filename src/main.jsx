@@ -15,6 +15,7 @@ import {
   RouterProvider,
 } from "react-router";
 import My_example from './view/My_example'
+import Login from './Pages/Auth/Login/Login'
 
 
 const router = createBrowserRouter([
@@ -23,8 +24,6 @@ const router = createBrowserRouter([
     Component: App,
     children: [
       // { index: true, Component: Header },
-      // { path: "Home", Component: Home },
-      // { path: "Footer", Component: My_example },
     ]
   },
   {
@@ -34,9 +33,9 @@ const router = createBrowserRouter([
     path: "*",
     Component: NotFound
   },
-  // {
-  //   path: "/about",
-  // }
+  {
+    path: "/login", Component: Login
+  },
 ]);
 
 

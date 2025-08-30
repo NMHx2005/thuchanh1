@@ -46,7 +46,7 @@ function App() {
       <div className='p-[100px]'>
         <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
       </div>
-
+      {/* <Outlet /> */}
     </>
   )
 }
