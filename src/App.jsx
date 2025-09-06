@@ -34,19 +34,9 @@ const items = [
 function App() {
   return (
     <>
-      {/* <Header />
-      <Outlet />
-      <Home />
-      <Footer /> */}
-      {/* <Link to="/"></Link>
-        <Link to="/Home"></Link>
-        <Link to="/Footer"></Link>
-        <Link to=""></Link> */}
-
-      <div className='p-[100px]'>
-        <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
-      </div>
-      {/* <Outlet /> */}
+        <div className='p-[100px]'>
+          <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+        </div>
     </>
   )
 }

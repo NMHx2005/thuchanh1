@@ -15,7 +15,8 @@ import {
     ProFormText,
 } from '@ant-design/pro-components';
 import { Button, Divider, Space, Tabs, message, theme } from 'antd';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { MyContext } from '../../../context/MyContext';
 
 const iconStyles = {
     color: 'rgba(0, 0, 0, 0.2)',
@@ -25,8 +26,26 @@ const iconStyles = {
 };
 
 const Login = () => {
+    const { user, setUser } = useContext(MyContext);
     const [loginType, setLoginType] = useState('phone');
     const { token } = theme.useToken();
+    const handleLogin = async (values) => {
+        const res = await fetch('http://localhost:8080/api/v1/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: values.username,
+                password: values.password,
+            }),
+        });
+        const result = await res.json();
+        localStorage.setItem("access_token", result.data.access_token);
+        setUser(result.data.user);
+        message.success('Login success');
+
+    };
     return (
         <div
             style={{
@@ -35,6 +54,10 @@ const Login = () => {
             }}
         >
             <LoginFormPage
+                submitter={true}
+                onFinish={async (values) => {
+                    handleLogin(values);
+                }}
                 backgroundImageUrl="https://mdn.alipayobjects.com/huamei_gcee1x/afts/img/A*y0ZTS6WLwvgAAAAAAAAAAAAADml6AQ/fmt.webp"
                 logo="https://github.githubassets.com/favicons/favicon.png"
                 backgroundVideoUrl="https://gw.alipayobjects.com/v/huamei_gcee1x/afts/video/jXRBRK_VAwoAAAAAAAAAAAAAK4eUAQBr"

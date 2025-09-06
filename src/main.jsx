@@ -1,21 +1,14 @@
-import { StrictMode } from 'react'
+import { StrictMode, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
-import Test from './component/Test'
-import Admin from './component/Admin'
-import About from './component/About'
-import './index.css'
-import "./styles/index.css"
-import Home from './Pages/Home'
 import NotFound from './component/NotFound'
-import Header from './component/Layout/Header'
-import Footer from './component/Layout/Footer'
 import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router";
-import My_example from './view/My_example'
 import Login from './Pages/Auth/Login/Login'
+import Register from './Pages/Auth/Register/Register'
+import { MyContextProvider } from './context/MyContext';
 
 
 const router = createBrowserRouter([
@@ -36,6 +29,9 @@ const router = createBrowserRouter([
   {
     path: "/login", Component: Login
   },
+  {
+    path: "/register", Component: Register
+  }
 ]);
 
 
@@ -43,6 +39,8 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     {/* <App /> */}
-    <RouterProvider router={router} />
+    <MyContextProvider>
+      <RouterProvider router={router} />
+    </MyContextProvider>
   </StrictMode>,
 )
