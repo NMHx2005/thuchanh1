@@ -9,6 +9,7 @@ import {
 import Login from './Pages/Auth/Login/Login'
 import Register from './Pages/Auth/Register/Register'
 import { MyContextProvider } from './context/MyContext';
+import FormModal from './Pages/Books/test';
 
 
 const router = createBrowserRouter([
@@ -31,6 +32,9 @@ const router = createBrowserRouter([
   },
   {
     path: "/register", Component: Register
+  },
+  {
+    path: "/test", Component: FormModal
   }
 ]);
 

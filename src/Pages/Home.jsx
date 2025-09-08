@@ -1,6 +1,17 @@
+import { useEffect } from "react";
 import Lession from "../component/Lesson/Lession";
+import { getAccount } from "../services/auth";
 
 const Home = () => {
+
+    useEffect(() => {
+        const getAccountF = async () => {
+            const res = await getAccount();
+            console.log(res);
+        }
+        getAccountF();
+    }, [])
+
     return (
         <>
             <Lession />

@@ -17,6 +17,7 @@ import {
 import { Button, Divider, Space, Tabs, message, theme } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import { MyContext } from '../../../context/MyContext';
+import { login } from '../../../services/auth';
 
 const iconStyles = {
     color: 'rgba(0, 0, 0, 0.2)',
@@ -30,20 +31,18 @@ const Login = () => {
     const [loginType, setLoginType] = useState('phone');
     const { token } = theme.useToken();
     const handleLogin = async (values) => {
-        const res = await fetch('http://localhost:8080/api/v1/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username: values.username,
-                password: values.password,
-            }),
-        });
-        const result = await res.json();
-        localStorage.setItem("access_token", result.data.access_token);
+        const res = await login(values.username, values.password);
+        const result = res.data;
+        const access_token = localStorage.getItem("access_token");
+        if (!access_token) {
+            localStorage.setItem("access_token", result.data.access_token);
+        } else {
+            localStorage.removeItem("access_token");
+            localStorage.setItem("access_token", result.data.access_token);
+        }
         setUser(result.data.user);
         message.success('Login success');
+        window.location.href = "/";
 
     };
     return (
