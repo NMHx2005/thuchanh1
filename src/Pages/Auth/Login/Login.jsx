@@ -43,7 +43,6 @@ const Login = () => {
         setUser(result.data.user);
         message.success('Login success');
         window.location.href = "/";
-
     };
     return (
         <div
